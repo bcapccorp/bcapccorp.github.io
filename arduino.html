@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Windows Phone - BcapcCORP</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+	  
+  	<div role="navigation" class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <p class="navbar-brand">BcapcCORP</p>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li class="dropdown">
+              <a data-toggle="dropdown" class="dropdown-toggle" href="#">Projects <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="windows-phone.html">Windows Phone</a></li>
+                <li><a href="#">Arduino</a></li>
+                <li><a href="#">Others</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+  	<div class="container">
+		<h3>Windows Phone APPs <span class="label label-default">BCC - Bluetooth Command Center</span></h3>
+		<hr>
+		<div class="row marketing">
+			<div class="col-lg-6">			  
+			  <h4><a role="button" class="btn btn-lg btn-primary" href="download/BCC_basic.7z" download>Download
+				  <span class="glyphicon glyphicon-download"></span>
+			  </a></h4>
+			  <h4><a role="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#ViewVideoID">Videos
+				  <span class="glyphicon glyphicon-play-circle"></span>
+			  </a></h4>
+			</div>
+			<div class="col-lg-6">
+			  <h4><a role="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#ViewManualID">Manual
+				  <span class="glyphicon glyphicon-book"></span>
+			  </a></h4>
+			  <h4><a role="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#ViewSourceID">View Source
+				  <span class="glyphicon glyphicon-edit"></span>
+			  </a></h4>
+			</div>
+			<div class="panel-group">
+			  <div class="panel panel-primary">
+			  	<div id="ViewVideoID" class="panel-collapse collapse">
+				  <div class="panel-body">
+					<div class="flex-video widescreen" style="margin: 0 auto;text-align:center;">
+<iframe width="560" height="315" src="http://www.youtube.com/embed/hW-hM-Vlw3U" frameborder="0" allowfullscreen></iframe>
+</div>
+				  </div>
+				</div>
+			  	<div id="ViewManualID" class="panel-collapse collapse">
+				  <div class="panel-body">
+					<pre><h4>
+A app só pode receber mensagens com o tamanho máximo de 256B( pretendo remover essa limitação em breve).
+
+Para que a app possa receber informações via bluetooth, é necessário primeiro enviar uma mensagem de 1B contendo o tamanho da mensagem real. Somente após isso a mensagem real deve ser enviada. Por exemplo: Serial.write(strlen(hello)); Serial.print(hello);. Isso enviará uma mensagem de 1B com o número 5 e logo depois enviará uma mensagem de tamanho 5B com o texto hello.
+
+Quando a app enviar uma mensagem para o arduino, a mensagem será enviada da seguinte forma: tamanho+mensagem. Por exemplo: 5hello.
+
+Em configurações, existem 3 opções:
+1- "Não enviar o tamanho da mensagem." é utilizada para enviar mensagens só de 1B.
+2- "Não limpar automaticamente." A tela só será limpa de forma manual.
+3- "Enviar ao apertar ENTER." Utilizado para enviar diversas mensagens rapidamente.
+					</h4></pre>
+				  </div>
+				</div>
+				<div id="ViewSourceID" class="panel-collapse collapse">
+				  <div class="panel-body">
+					<pre><h4>
+const int lpin = 4;
+const int cpin = 5;
+const int rpin = 6;
+const int tpin = 13;
+
+void setup() {
+
+  pinMode(lpin, OUTPUT);
+  pinMode(cpin, OUTPUT);
+  pinMode(rpin, OUTPUT);
+  pinMode(tpin, OUTPUT);
+  Serial.begin(9600);       // start serial communication at 9600bps
+
+}
+
+void loop() {
+  if(Serial.available()) {
+      int commandSize = (int)Serial.read();
+      char command[commandSize];
+      int commandPos = 0;
+      while(commandPos < commandSize) {
+        if(Serial.available()) {
+          command[commandPos] = (char)Serial.read();
+          commandPos++;
+        }
+      }
+      command[commandPos] = 0;
+      processCommand(command);
+  }
+  delay(30);
+} 
+
+void processCommand(char* command) {
+  if(strcmp(command,"ton") == 0) {
+    digitalWrite(tpin, HIGH);
+    sendMessage("LED_TEST:ON");
+  }
+  if(strcmp(command,"toff") == 0) {
+    digitalWrite(tpin, LOW);
+    sendMessage("LED_TEST:OFF");
+  }
+  if(strcmp(command,"con") == 0) {
+    digitalWrite(cpin, HIGH);
+    sendMessage("LED_CENTER:ON");
+  }
+  if(strcmp(command,"coff") == 0) {
+    digitalWrite(cpin, LOW);
+    sendMessage("LED_CENTER:OFF");    
+  }
+  if(strcmp(command,"lon") == 0) {
+    digitalWrite(lpin, HIGH);
+    sendMessage("LED_LEFT:ON");
+  }
+  if(strcmp(command,"loff") == 0) {
+    digitalWrite(lpin, LOW);
+    sendMessage("LED_LEFT:OFF");
+  }
+  if(strcmp(command,"ron") == 0) {
+    digitalWrite(rpin, HIGH);
+    sendMessage("LED_RIGHT:ON");
+  }
+  if(strcmp(command,"roff") == 0) {
+    digitalWrite(rpin, LOW);
+    sendMessage("LED_RIGHT:OFF");
+  }
+  
+}
+
+void sendMessage(char* message) {
+  int messageLen = strlen(message);
+  if(messageLen < 256) {  // MAX MESSAGE SIZE
+    Serial.write(messageLen);
+    Serial.print(message);
+  }
+}						  
+				  	</h4></pre>
+				  </div>
+				</div>
+			  </div>
+			</div>
+
+		<div class="footer navbar-fixed-bottom">
+        	<p style="text-align:right">&copy; BcapcCORP 2014</p>
+  		</div>
+	</div>
+  	
+  </body>
+</html>
