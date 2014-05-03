@@ -23,7 +23,7 @@
     </AdCultureDescriptor>-->
 		<AdCultureDescriptor CultureName="default">
       <Probabilities Probability="40" AdType="AdMob" AppID="a15203c91598fa7"/>
-      <Probabilities Probability="40" AdType="PubCenter" AppID="6939519b-99a5-4c86-be51-e0f4aa4317f2" SecondaryID="10139470" />
+      <Probabilities Probability="40" AdType="PubCenter" AppID="e2e28570-1c8b-4bd8-b3c6-81b30343ff15" SecondaryID="10736283" />
       <Probabilities Probability="20" AdType="AdDuplex" AppID="51603"/>
       <!--<Probabilities AdType="DefaultHouseAd" AppID="http://adrotator.apphb.com/SampleRemoteHouseAd.xaml"/>-->
     </AdCultureDescriptor>
